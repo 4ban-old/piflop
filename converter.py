@@ -68,7 +68,7 @@ def buildBeep(id, floppy, filename):
     floppy.write(notes)
 
 
-def convert(filename=''):
+def convert(filename=False):
     max = 0
     if filename:
         parse = filename.split('.')
@@ -79,7 +79,7 @@ def convert(filename=''):
             if int(row[0]) > max:
                 max = int(row[0])
 
-        floppy = open('./music'+name+'.floppy', 'w+')
+        floppy = open('./'+name+'.floppy', 'w+')
         for x in range(2, max + 1):
             buildBeep(x, floppy, filename)
     else:
