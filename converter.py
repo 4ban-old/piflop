@@ -79,7 +79,7 @@ def convert(filename=''):
             if int(row[0]) > max:
                 max = int(row[0])
 
-        floppy = open('./'+name+'.floppy', 'w+')
+        floppy = open('./music'+name+'.floppy', 'w+')
         for x in range(2, max + 1):
             buildBeep(x, floppy, filename)
     else:
