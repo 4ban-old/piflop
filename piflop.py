@@ -1,126 +1,232 @@
 # -*- coding: utf-8 -*-
-__author__ = 'Dmitry Kryukov'
 """
     PiFlop - music player by floppy drives.
 """
 
 import os
 import random
-import collections
-import types
-from cprint import cprint
 from converter import convert
+import curses
 
-ParsedCommand = collections.namedtuple('ParsedCommand', ('cls', 'cmd', 'param',), verbose=False)
+# class Shell:
+#     def __init__(self, asciiart=False, colorize=True):
+#         self.exit = False
+#         self.asciiart = list()
+#         self.colorize = colorize
+#         if asciiart and os.path.exists('ASCII.art'):
+#             with open('ASCII.art') as f:
+#                 asciiart = f.read()
+#                 asciiart = asciiart.split('\n\n')
+#                 asciiart = filter(lambda x:  bool(x.replace('\n', '')), asciiart)
+#                 ascii = list()
+#                 for item in asciiart:
+#                     ascii.append(cprint('[green]'+item+'[/]', colorize=self.colorize, noprint=True))
+#             self.asciiart = ascii[:]
+#
+#         if not self.asciiart:
+#             art = ('''
+#              ___________________________.
+#             |;;|                     |;;||
+#             |[]|---------------------|[]||
+#             |;;|                     |;;||
+#             |;;|                     |;;||
+#             |;;|                     |;;||
+#             |;;|                     |;;||
+#             |;;|                     |;;||
+#             |;;|                     |;;||
+#             |;;|_____________________|;;||
+#             |;;;;;;;;;;;;;;;;;;;;;;;;;;;||
+#             |;;;;;;_______________ ;;;;;||
+#             |;;;;;|  ___          |;;;;;||
+#             |;;;;;| |;;;|         |;;;;;||
+#             |;;;;;| |;;;|         |;;;;;||
+#             |;;;;;| |;;;|         |;;;;;||
+#             |;;;;;| |;;;|         |;;;;;||
+#             |;;;;;| |___|         |;;;;;||
+#             \_____|_______________|_____||
+#             ~~~~~^^^^^^^^^^^^^^^^^~~~~~~
+#             ''')
+#             self.asciiart.append(cprint('[green]'+art+'[/]', colorize=self.colorize, noprint=True))
+#         self.line = '>>> '
+#         self.reserved_commands = ['help']
+
+def start():
+    myscreen = curses.initscr()
+    myscreen.border(0)
+    myscreen.addstr(12, 25, "See Curses, See Curses Run!")
+    myscreen.refresh()
+    myscreen.getch()
+    curses.endwin()
+
+def start2():
+    try:
+        myscreen = curses.initscr()
+        myscreen.clear()
+        myscreen.addstr(0,0,"0        1         2         3         4         5         6         7")
+        myscreen.addstr(1,0,"12345678901234567890123456789012345678901234567890123456789012345678901234567890")
+        myscreen.addstr(10,0,"10")
+        myscreen.addstr(20,0,"20")
+        myscreen.addstr(23,0, "23 - Press Any Key to Continue")
+        myscreen.refresh()
+        myscreen.getch()
+    finally:
+        curses.endwin()
 
 
-def _parse_command(cmd):
-        """Parse command string into named tuple """
-        cmd = cmd.strip(' ')
-        cls = ''
-        if cmd.startswith('@'):
-            cls, cmd = cmd.split(' ', 1)
-            cls = cls[1:]
-            cmd = cmd.strip(' ')
-        cmd += ' '
-        cmd, param = cmd.split(' ', 1)
-        param = param.strip(' ')
-        return ParsedCommand(cls, cmd, param)
+def InitScreen(Border):
+    if Border == 1:
+        myscreen.border(0)
 
+#==========================================================
+#                       MAIN LOOP
+#==========================================================
+myscreen = curses.initscr()
+InitScreen(1)
+try:
+    myscreen.refresh()
+    # Your Code Stuff Here...
+    myscreen.addstr(1,1, "Press Any Key to Continue")
+    myscreen.getch()
+finally:
+    curses.endwin()
 
-class Shell:
-    def __init__(self, asciiart=False, colorize=True):
-        self.exit = False
-        self.asciiart = list()
-        self.colorize = colorize
-        if asciiart and os.path.exists('ASCII.art'):
-            with open('ASCII.art') as f:
-                asciiart = f.read()
-                asciiart = asciiart.split('\n\n')
-                asciiart = filter(lambda x:  bool(x.replace('\n', '')), asciiart)
-                ascii = list()
-                for item in asciiart:
-                    ascii.append(cprint('[green]'+item+'[/]', colorize=self.colorize, noprint=True))
-            self.asciiart = ascii[:]
+# ===================================================
+#                RECIPE DATABASE
+# ===================================================
+#  1 - Show All Recipes
+#  2 - Search for a recipe
+#  3 - Show a Recipe
+#  4 - Delete a recipe
+#  5 - Add a recipe
+#  6 - Print a recipe
+#  0 - Exit
+# ===================================================
+# Enter a selection ->
 
-        if not self.asciiart:
-            art = ('''
-             ___________________________.
-            |;;|                     |;;||
-            |[]|---------------------|[]||
-            |;;|                     |;;||
-            |;;|                     |;;||
-            |;;|                     |;;||
-            |;;|                     |;;||
-            |;;|                     |;;||
-            |;;|                     |;;||
-            |;;|_____________________|;;||
-            |;;;;;;;;;;;;;;;;;;;;;;;;;;;||
-            |;;;;;;_______________ ;;;;;||
-            |;;;;;|  ___          |;;;;;||
-            |;;;;;| |;;;|         |;;;;;||
-            |;;;;;| |;;;|         |;;;;;||
-            |;;;;;| |;;;|         |;;;;;||
-            |;;;;;| |;;;|         |;;;;;||
-            |;;;;;| |___|         |;;;;;||
-            \_____|_______________|_____||
-            ~~~~~^^^^^^^^^^^^^^^^^~~~~~~
-            ''')
-            self.asciiart.append(cprint('[green]'+art+'[/]', colorize=self.colorize, noprint=True))
-        self.line = '>>> '
-        self.reserved_commands = ['help']
+curses.initscreen
+LogicLoop
+    ShowMainMenu                     # Show the main menu
+    MainInKey                        # This is our main input handling routine
+        While Key != 0:
+            If Key == 1:
+                ShowAllRecipesMenu   # Show the All Recipes Menu
+                Inkey1               # Do the input routines for this
+                ShowMainMenu         # Show the main menu
+            If Key == 2:
+                SearchForARecipeMenu # Show the Search for a Recipe Menu
+                InKey2               # Do the input routines for this option
+                ShowMainMenu         # Show the main menu again
+            If Key == 3:
+                ShowARecipeMenu      # Show the Show a recipe menu routine
+                InKey3               # Do the input routine for this routine
+                ShowMainMenu         # Show the main menu again
+                                     # And so on and so on
+curses.endwin()                      # Restore the terminal
 
-    def _exit(self, *args):
-        self.exit = True
+def DoMainMenu():
+    myscreen.erase()
+    myscreen.addstr(1,1,  "========================================")
+    myscreen.addstr(2,1,  "           Recipe Database")
+    myscreen.addstr(3,1,  "========================================")
+    myscreen.addstr(4,1,  "  1 - Show All Recipes")
+    myscreen.addstr(5,1,  "  2 - Search for a recipe")
+    myscreen.addstr(6,1,  "  3 - Show a recipe")
+    myscreen.addstr(7,1,  "  4 - Delete a recipe")
+    myscreen.addstr(8,1,  "  5 - Add a recipe")
+    myscreen.addstr(9,1,  "  6 - Print a recipe")
+    myscreen.addstr(10,1, "  0 - Exit")
+    myscreen.addstr(11,1, "========================================")
+    myscreen.addstr(12,1, "  Enter a selection: ")
+    myscreen.refresh()
 
-    def _quit(self, *args):
-        self._exit()
+#    MAIN LOOP
+try:
+    myscreen = curses.initscr()
+    LogicLoop()
+finally:
+    curses.endwin()
 
-    def _bye(self, *args):
-        self._exit()
+def LogicLoop():
+    DoMainMenu()
+    MainInKey()
 
-    def _help(self, args=None):
-        print 'hello'
+def MainInKey():
+    key = 'X'
+    while key != ord('0'):
+        key = myscreen.getch(12,22)
+        myscreen.addch(12,22,key)
+        if key == ord('1'):
+            ShowAllRecipesMenu()
+            DoMainMenu()
+        elif key == ord('2'):
+            SearchForARecipeMenu()
+            InKey2()
+            DoMainMenu()
+        elif key == ord('3'):
+            ShowARecipeMenu()
+            DoMainMenu()
+        elif key == ord('4'):
+            NotReady("'Delete A Recipe'")
+            DoMainMenu()
+        elif key == ord('5'):
+            NotReady("'Add A Recipe'")
+            DoMainMenu()
+        elif key == ord('6'):
+            NotReady("'Print A Recipe'")
+            DoMainMenu()
+        myscreen.refresh()
 
-    def run(self):
-        print random.choice(self.asciiart)
-        print '\n\n'
-        cprint('\n[cyan][underline]PiPlop - Music player by floppy drives. version 0.1[/][/]\n', colorize=self.colorize)
-        while not self.exit:
-            try:
-                cmd = raw_input(cprint('[green]'+self.line+'[/]', colorize=self.colorize, noprint=True))
-            except KeyboardInterrupt:
-                cprint('\nPlease, enter [blue]`exit`[/] or [blue]`quit`[/] or [blue]`bye`[/]', colorize=self.colorize)
-                continue
-            if not cmd:
-                continue
+def SearchForARecipeMenu():
+    myscreen.addstr(4,1, "-------------------------------")
+    myscreen.addstr(5,1, " Search in")
+    myscreen.addstr(6,1, "-------------------------------")
+    myscreen.addstr(7,1, " 1 - Recipe Name")
+    myscreen.addstr(8,1, " 2 - Recipe Source")
+    myscreen.addstr(9,1, " 3 - Ingredients")
+    myscreen.addstr(10,1," 0 - Exit")
+    myscreen.addstr(11,1,"Enter Search Type -> ")
+    myscreen.refresh()
 
-            parsedcommand = _parse_command(cmd)
-            commands = list()
-            if parsedcommand.set:
-                commands.append(parsedcommand.command)
-                #if parsedcommand.set in self.commands_sets:
-                #    commands.append(self.commands_sets[parsedcommand.set].getattr(self, '_'+parsedcommand.command, None))
-                #else:
-                #    cprint('[red]Cant find [blue]`%s`[/] in set [yellow]"%s"[/][/]' % (parsedcommand.command, parsedcommand.set), colorize=self.colorize)
-            elif parsedcommand.command in self.reserved_commands:
-                commands.append(getattr(self, '_'+parsedcommand.command, None))
-            else:
-                commands.append(getattr(self, '_'+parsedcommand.command, None))
-                for set_name, set_self in self.commands_sets.items():
-                    commands.append(getattr(set_self, '_'+parsedcommand.command, None))
-            commands = filter(lambda x: x is not None, commands)
+def InKey2():
+    key = 'X'
+    doloop = 1
+    while doloop == 1:
+        key = myscreen.getch(11,22)
+        myscreen.addch(11,22,key)
+        tmpstr = "Enter text to search in "
+        if key == ord('1'):
+            sstr = "'Recipe Name' for -> "
+            tmpstr = tmpstr + sstr
+            retstring = GetSearchLine(13,1,tmpstr)
+            break
+        elif key == ord('2'):
+            sstr = "'Recipe Source' for -> "
+            tmpstr = tmpstr + sstr
+            retstring = GetSearchLine(13,1,tmpstr)
+            break
+        elif key == ord('3'):
+            sstr = "'Ingredients' for -> "
+            tmpstr = tmpstr + sstr
+            retstring = GetSearchLine(13,1,tmpstr)
+            break
+        else:
+            retstring = ""
+            break
+    if retstring != "":
+        myscreen.addstr(15,1,"You entered - " + retstring)
+    else:
+        myscreen.addstr(15,1,"You entered a blank string")
+    myscreen.refresh()
+    myscreen.addstr(20,1,"Press a key")
+    myscreen.getch()
 
-            if commands:
-                if len(commands) > 1:
-                    cprint('Found [blue]%s[/] commands. Use one from list below:' % len(commands), colorize=self.colorize)
-                    for command in commands:
-                        cprint('[yellow]$%s[/] [red]->[/] [blue]%s[/]' % (command.im_class.__name__, parsedcommand.command), colorize=self.colorize)
-                else:
-                    commands[0](parsedcommand.args) if parsedcommand.args else commands[0]()
-            else:
-                cprint('[red]Command [blue]`%s`[/] does not exists![/]' % parsedcommand.command, colorize=self.colorize)
+def GetSearchLine(row,col,strng):
+    myscreen.addstr(row,col,strng)
+    myscreen.refresh()
+    instring = myscreen.getstr(row,len(strng)+1)
+    myscreen.addstr(row,len(strng)+1,instring)
+    myscreen.refresh()
+    return instring
 
 if __name__ == '__main__':
-    s = Shell()
-    s.run()
+    pass
